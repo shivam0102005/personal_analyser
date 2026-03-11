@@ -1,0 +1,28 @@
+# AI Personal Finance Analyzer - Dependencies
+
+# Core Data Science
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Visualization
+matplotlib>=3.7.0
+seaborn>=0.12.0
+plotly>=5.14.0
+
+# Dashboard
+streamlit>=1.28.0
+
+# Machine Learning
+scikit-learn>=1.3.0
+
+# File Processing
+openpyxl>=3.1.0          # Excel read/write
+pdfplumber>=0.9.0         # PDF extraction
+xlrd>=2.0.1               # Legacy .xls support
+
+# Report Generation
+fpdf2>=2.7.0              # PDF creation (alternative)
+reportlab>=4.0.0          # PDF generation
+
+# Utilities
+python-dateutil>=2.8.0

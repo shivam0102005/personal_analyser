@@ -1,0 +1,89 @@
+Date,Description,Category,Amount,Transaction_Type,Merchant,Payment_Method
+2025-01-03,Swiggy Order,Food,350,Debit,Swiggy,UPI
+2025-01-04,Uber Ride,Transport,220,Debit,Uber,UPI
+2025-01-05,Amazon Purchase,Shopping,1200,Debit,Amazon,Credit Card
+2025-01-06,Netflix Subscription,Entertainment,649,Debit,Netflix,Credit Card
+2025-01-07,Electricity Bill,Utilities,1800,Debit,Tata Power,Net Banking
+2025-01-08,Zomato Order,Food,480,Debit,Zomato,UPI
+2025-01-09,Salary Credit,Income,75000,Credit,Employer,Bank Transfer
+2025-01-10,Ola Cab,Transport,350,Debit,Ola,UPI
+2025-01-11,Flipkart Shopping,Shopping,2500,Debit,Flipkart,Debit Card
+2025-01-12,Grocery Store,Groceries,1200,Debit,DMart,Cash
+2025-01-13,Medical Pharmacy,Healthcare,650,Debit,Apollo Pharmacy,UPI
+2025-01-14,Swiggy Order,Food,290,Debit,Swiggy,UPI
+2025-01-15,Petrol Station,Transport,800,Debit,Indian Oil,Debit Card
+2025-01-16,Amazon Purchase,Shopping,3200,Debit,Amazon,Credit Card
+2025-01-17,Water Bill,Utilities,400,Debit,Municipal Corp,Net Banking
+2025-01-18,Zomato Order,Food,550,Debit,Zomato,UPI
+2025-01-19,Spotify Premium,Entertainment,119,Debit,Spotify,Credit Card
+2025-01-20,Uber Ride,Transport,180,Debit,Uber,UPI
+2025-01-21,Restaurant Dinner,Food,1800,Debit,Social,Credit Card
+2025-01-22,Grocery Store,Groceries,950,Debit,BigBasket,UPI
+2025-01-23,ATM Withdrawal,Miscellaneous,5000,Debit,ATM,Debit Card
+2025-01-24,Swiggy Order,Food,420,Debit,Swiggy,UPI
+2025-01-25,Mobile Recharge,Utilities,299,Debit,Jio,UPI
+2025-01-26,Amazon Purchase,Shopping,799,Debit,Amazon,Credit Card
+2025-01-27,Gym Membership,Health & Fitness,1000,Debit,Cult.fit,Credit Card
+2025-01-28,Uber Ride,Transport,250,Debit,Uber,UPI
+2025-01-29,Zomato Order,Food,380,Debit,Zomato,UPI
+2025-01-30,Movie Tickets,Entertainment,600,Debit,BookMyShow,UPI
+2025-01-31,Grocery Store,Groceries,1100,Debit,DMart,Cash
+2025-02-01,Swiggy Order,Food,310,Debit,Swiggy,UPI
+2025-02-02,Ola Cab,Transport,420,Debit,Ola,UPI
+2025-02-03,Flipkart Shopping,Shopping,4500,Debit,Flipkart,Credit Card
+2025-02-04,Netflix Subscription,Entertainment,649,Debit,Netflix,Credit Card
+2025-02-05,Electricity Bill,Utilities,1950,Debit,Tata Power,Net Banking
+2025-02-06,Salary Credit,Income,75000,Credit,Employer,Bank Transfer
+2025-02-07,Restaurant Lunch,Food,650,Debit,Mainland China,Credit Card
+2025-02-08,Amazon Purchase,Shopping,2100,Debit,Amazon,Credit Card
+2025-02-09,Medical Doctor,Healthcare,800,Debit,City Hospital,Cash
+2025-02-10,Zomato Order,Food,490,Debit,Zomato,UPI
+2025-02-11,Petrol Station,Transport,900,Debit,Indian Oil,Debit Card
+2025-02-12,Grocery Store,Groceries,1300,Debit,DMart,Cash
+2025-02-13,Swiggy Order,Food,350,Debit,Swiggy,UPI
+2025-02-14,Valentine Dinner,Food,3500,Debit,Taj Restaurant,Credit Card
+2025-02-15,Uber Ride,Transport,290,Debit,Uber,UPI
+2025-02-16,Water Bill,Utilities,400,Debit,Municipal Corp,Net Banking
+2025-02-17,Mobile Recharge,Utilities,299,Debit,Jio,UPI
+2025-02-18,Amazon Purchase,Shopping,5500,Debit,Amazon,Credit Card
+2025-02-19,Zomato Order,Food,420,Debit,Zomato,UPI
+2025-02-20,Gym Membership,Health & Fitness,1000,Debit,Cult.fit,Credit Card
+2025-02-21,Grocery Store,Groceries,880,Debit,BigBasket,UPI
+2025-02-22,Movie Tickets,Entertainment,800,Debit,BookMyShow,UPI
+2025-02-23,Swiggy Order,Food,380,Debit,Swiggy,UPI
+2025-02-24,Ola Cab,Transport,380,Debit,Ola,UPI
+2025-02-25,ATM Withdrawal,Miscellaneous,3000,Debit,ATM,Debit Card
+2025-02-26,Spotify Premium,Entertainment,119,Debit,Spotify,Credit Card
+2025-02-27,Flipkart Shopping,Shopping,1800,Debit,Flipkart,Debit Card
+2025-02-28,Restaurant Dinner,Food,1200,Debit,Pizza Hut,Credit Card
+2025-03-01,Swiggy Order,Food,290,Debit,Swiggy,UPI
+2025-03-02,Uber Ride,Transport,210,Debit,Uber,UPI
+2025-03-03,Amazon Purchase,Shopping,980,Debit,Amazon,Credit Card
+2025-03-04,Netflix Subscription,Entertainment,649,Debit,Netflix,Credit Card
+2025-03-05,Electricity Bill,Utilities,1750,Debit,Tata Power,Net Banking
+2025-03-06,Salary Credit,Income,75000,Credit,Employer,Bank Transfer
+2025-03-07,Grocery Store,Groceries,1150,Debit,DMart,Cash
+2025-03-08,Zomato Order,Food,450,Debit,Zomato,UPI
+2025-03-09,Medical Pharmacy,Healthcare,320,Debit,Apollo Pharmacy,UPI
+2025-03-10,Petrol Station,Transport,750,Debit,Indian Oil,Debit Card
+2025-03-11,Swiggy Order,Food,380,Debit,Swiggy,UPI
+2025-03-12,Water Bill,Utilities,400,Debit,Municipal Corp,Net Banking
+2025-03-13,Amazon Purchase,Shopping,1500,Debit,Amazon,Credit Card
+2025-03-14,Uber Ride,Transport,340,Debit,Uber,UPI
+2025-03-15,Restaurant Lunch,Food,780,Debit,Barbeque Nation,Credit Card
+2025-03-16,Grocery Store,Groceries,1050,Debit,BigBasket,UPI
+2025-03-17,Mobile Recharge,Utilities,299,Debit,Jio,UPI
+2025-03-18,Zomato Order,Food,510,Debit,Zomato,UPI
+2025-03-19,Gym Membership,Health & Fitness,1000,Debit,Cult.fit,Credit Card
+2025-03-20,Movie Tickets,Entertainment,700,Debit,BookMyShow,UPI
+2025-03-21,ATM Withdrawal,Miscellaneous,4000,Debit,ATM,Debit Card
+2025-03-22,Flipkart Shopping,Shopping,2200,Debit,Flipkart,Credit Card
+2025-03-23,Swiggy Order,Food,320,Debit,Swiggy,UPI
+2025-03-24,Ola Cab,Transport,460,Debit,Ola,UPI
+2025-03-25,Spotify Premium,Entertainment,119,Debit,Spotify,Credit Card
+2025-03-26,Amazon Purchase,Shopping,15000,Debit,Amazon,Credit Card
+2025-03-27,Grocery Store,Groceries,990,Debit,DMart,Cash
+2025-03-28,Uber Ride,Transport,280,Debit,Uber,UPI
+2025-03-29,Restaurant Dinner,Food,1400,Debit,KFC,Credit Card
+2025-03-30,Medical Doctor,Healthcare,1200,Debit,City Hospital,Cash
+2025-03-31,Zomato Order,Food,390,Debit,Zomato,UPI
