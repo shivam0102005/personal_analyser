@@ -76,29 +76,40 @@ button[kind="header"]{display:none!important}
 [data-testid="stSidebarCollapseButton"]{display:none!important}
 svg[data-testid="stIconMaterial"]{display:none!important}
 
-/* ── Sidebar toggle button ── */
-.sidebar-toggle-btn {
-  position:fixed;
-  top:14px;
-  left:14px;
-  z-index:99999;
-  width:38px;height:38px;
-  background:linear-gradient(135deg,rgba(155,127,255,.25),rgba(0,229,204,.15));
-  border:1px solid rgba(155,127,255,.45);
-  border-radius:10px;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  font-size:1.1rem;
-  backdrop-filter:blur(12px);
-  transition:all .2s ease;
-  box-shadow:0 4px 16px rgba(0,0,0,.4);
+/* ── Sidebar toggle button — fixed top-left ── */
+button[key="sb_btn"] {
+  position:fixed!important;
+  top:10px!important;
+  left:10px!important;
+  z-index:999999!important;
+  background:linear-gradient(135deg,rgba(155,127,255,.3),rgba(0,229,204,.15))!important;
+  border:1px solid rgba(155,127,255,.5)!important;
+  border-radius:10px!important;
+  height:38px!important;
+  padding:0 14px!important;
+  font-size:.82rem!important;
+  font-weight:600!important;
+  color:#F0EFFF!important;
+  box-shadow:0 4px 16px rgba(0,0,0,.5)!important;
+  letter-spacing:.04em!important;
+  backdrop-filter:blur(12px)!important;
 }
-.sidebar-toggle-btn:hover{
-  background:linear-gradient(135deg,rgba(155,127,255,.45),rgba(0,229,204,.25));
-  box-shadow:0 0 20px rgba(155,127,255,.35);
-  transform:scale(1.08);
+button[key="sb_btn"]:hover{
+  background:linear-gradient(135deg,rgba(155,127,255,.5),rgba(0,229,204,.3))!important;
+  box-shadow:0 0 22px rgba(155,127,255,.4)!important;
 }
-
+div[data-testid="stAppViewContainer"] > section.main div[data-testid="stVerticalBlock"]:first-of-type > div:first-child {
+  position:fixed!important;
+  top:0!important;
+  left:0!important;
+  z-index:999999!important;
+  background:transparent!important;
+  width:auto!important;
+  padding:0!important;
+}
+[data-testid="stDecoration"]{display:none!important}
+[data-testid="stHeader"]{display:none!important}
+            
 /* ── Sidebar ── */
 [data-testid="stSidebar"]{
   background:linear-gradient(175deg,rgba(10,8,32,.97) 0%,rgba(6,4,20,.98) 100%)!important;
@@ -344,21 +355,65 @@ if "cleaning_report" not in st.session_state:
     st.session_state["cleaning_report"] = {}
 if "data_loaded" not in st.session_state:
     st.session_state["data_loaded"] = False
-if "sidebar_open" not in st.session_state:
-    st.session_state["sidebar_open"] = True
 
-# ─── Sidebar toggle button (fixed top-left) ───────────────────────────────────
-toggle_icon = "✕" if st.session_state["sidebar_open"] else "☰"
-toggle_label = "Close Sidebar" if st.session_state["sidebar_open"] else "Open Sidebar"
+# ─── Sidebar toggle ──────────────────────────────────────────────────────────
+if "sb_open" not in st.session_state:
+    st.session_state["sb_open"] = True
 
+# Hide/show sidebar via CSS
+if not st.session_state["sb_open"]:
+    st.markdown("""
+    <style>
+    [data-testid="stSidebar"]{display:none!important}
+    .block-container{padding-left:1rem!important}
+    </style>""", unsafe_allow_html=True)
+
+# Toggle button fixed at top-left via CSS injection + sidebar button
+toggle_label = "✕" if st.session_state["sb_open"] else "☰"
+with st.sidebar:
+    st.markdown(f"""
+    <style>
+    div[data-testid="stSidebarCollapseButton"] {{ display:none!important }}
+    </style>
+    <div style="
+      position:fixed;
+      top:12px;
+      left:{'270px' if st.session_state['sb_open'] else '0px'};
+      z-index:999999;
+      ">
+    </div>
+    """, unsafe_allow_html=True)
+
+# Floating button outside sidebar at top-left
 st.markdown(f"""
-<div class="sidebar-toggle-btn" title="{toggle_label}" onclick="
-  var sidebar = window.parent.document.querySelector('[data-testid=stSidebar]');
-  var btn = window.parent.document.querySelector('[data-testid=stSidebarCollapseButton] button');
-  if(btn) btn.click();
-" id="sidebarToggle">{toggle_icon}</div>
+<style>
+section[data-testid="stSidebar"] + div .stButton > button,
+.fixed-toggle button {{
+  position:fixed!important;
+  top:12px!important;
+  left:{'285px' if st.session_state['sb_open'] else '12px'}!important;
+  z-index:999999!important;
+  width:36px!important;
+  height:36px!important;
+  padding:0!important;
+  min-width:36px!important;
+  border-radius:8px!important;
+  font-size:1.1rem!important;
+  background:linear-gradient(135deg,rgba(155,127,255,.35),rgba(0,229,204,.2))!important;
+  border:1px solid rgba(155,127,255,.55)!important;
+  color:#F0EFFF!important;
+  box-shadow:0 4px 14px rgba(0,0,0,.5)!important;
+  backdrop-filter:blur(10px)!important;
+  line-height:36px!important;
+  text-align:center!important;
+}}
+</style>
+<div class="fixed-toggle"></div>
 """, unsafe_allow_html=True)
 
+if st.button(toggle_label, key="sb_btn"):
+    st.session_state["sb_open"] = not st.session_state["sb_open"]
+    st.rerun()
 
 # ─── Sidebar ──────────────────────────────────────────────────────────────────
 with st.sidebar:
