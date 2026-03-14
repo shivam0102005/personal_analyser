@@ -17,6 +17,8 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 from pathlib import Path
+import plotly.graph_objects as go
+import plotly.express as px
 
 # ─── Page Config ─────────────────────────────────────────────────────────────
 st.set_page_config(
@@ -258,7 +260,8 @@ CT = dict(
     font=dict(family="DM Sans, sans-serif", color="#C8C3FF", size=12),
     title_font=dict(family="Syne, sans-serif", size=16, color="#F0EFFF"),
     title_x=0.02,
-    margin=dict(l=16, r=16, t=52, b=16),
+    margin=dict(l=70, r=70, t=70, b=50),
+    autosize=True,
     colorway=PALETTE,
     xaxis=dict(gridcolor="rgba(120,100,255,.08)", linecolor="rgba(120,100,255,.15)", tickfont=dict(size=11)),
     yaxis=dict(gridcolor="rgba(120,100,255,.08)", linecolor="rgba(120,100,255,.15)", tickfont=dict(size=11)),
@@ -267,9 +270,20 @@ CT = dict(
                     font=dict(family="DM Sans", color="#F0EFFF")),
 )
 
+CHART_CONFIG = {
+    "displayModeBar": True,
+    "displaylogo": False,
+    "modeBarButtonsToRemove": ["select2d","lasso2d","zoomIn2d","zoomOut2d","autoScale2d"],
+    "toImageButtonOptions": {"format": "png", "filename": "finsight_chart", "scale": 2},
+}
+
 def T(fig):
     fig.update_layout(**CT)
     return fig
+
+def PC(fig, **kwargs):
+    """Wrapper for st.plotly_chart with consistent config."""
+    st.plotly_chart(fig, use_container_width=True, config=CHART_CONFIG, **kwargs)
 
 
 # ─── Data loaders ─────────────────────────────────────────────────────────────
@@ -573,29 +587,31 @@ tabs = st.tabs(["  Overview  ","  Categories  ","  Monthly Trends  ",
 
 # ════════════════ TAB 1 — OVERVIEW ═══════════════════════════════════════════
 with tabs[0]:
-    import plotly.graph_objects as go
-    import plotly.express as px
     from src.analytics.expense_analysis import (
         category_spending, daily_spending, top_merchants, day_of_week_spending
     )
+    if fdf[fdf["Transaction_Type"]=="Debit"].empty:
+        st.info("No debit transactions found for the selected filters."); st.stop()
 
     c1, c2 = st.columns([1, 1.45])
     with c1:
         cats = category_spending(fdf)
         fig = go.Figure(go.Pie(
-            labels=cats["Category"], values=cats["Total"], hole=0.55,
+            labels=cats["Category"], values=cats["Total"], hole=0.54,
             textposition="outside", textinfo="label+percent",
-            textfont=dict(size=10, family="DM Sans"),
+            textfont=dict(size=9, family="DM Sans"),
             marker=dict(colors=PALETTE, line=dict(color="rgba(0,0,0,.3)", width=2)),
+            automargin=True,
         ))
         fig.update_layout(
             title="Spending Distribution",
             annotations=[dict(text=f"₹{cats['Total'].sum():,.0f}",
-                               x=0.5,y=0.5,showarrow=False,
-                               font=dict(size=16,family="Syne",color="#F0EFFF"))],
+                       x=0.5,y=0.5,showarrow=False,
+                       font=dict(size=15,family="Syne",color="#F0EFFF"))],
             showlegend=False,
+            margin=dict(l=130, r=100, t=60, b=100),
         )
-        T(fig); st.plotly_chart(fig, use_container_width=True)
+        T(fig); PC(fig)
 
     with c2:
         daily = daily_spending(fdf)
@@ -611,8 +627,9 @@ with tabs[0]:
             line=dict(color="#00E5CC", width=2.5),
         ))
         fig.update_layout(title="Daily Spending Trend",
-                          legend=dict(orientation="h", y=1.1))
-        T(fig); st.plotly_chart(fig, use_container_width=True)
+                          legend=dict(orientation="h", y=1.1),
+                          margin=dict(l=60, r=20, t=65, b=40))
+        T(fig); PC(fig)
 
     c3, c4 = st.columns(2)
     with c3:
@@ -625,7 +642,7 @@ with tabs[0]:
         fig.update_layout(title="Top Merchants", showlegend=False,
                           yaxis=dict(categoryorder="total ascending"),
                           coloraxis_showscale=False)
-        T(fig); st.plotly_chart(fig, use_container_width=True)
+        T(fig); PC(fig)
 
     with c4:
         dow = day_of_week_spending(fdf).dropna()
@@ -639,16 +656,16 @@ with tabs[0]:
             textposition="outside",
         ))
         fig.update_layout(title="Avg Spend by Day of Week")
-        T(fig); st.plotly_chart(fig, use_container_width=True)
+        T(fig); PC(fig)
 
 
 # ════════════════ TAB 2 — CATEGORIES ══════════════════════════════════════════
 with tabs[1]:
-    import plotly.graph_objects as go
-    import plotly.express as px
     from src.analytics.expense_analysis import (
         category_spending, spending_heatmap_data, payment_method_distribution
     )
+    if fdf[fdf["Transaction_Type"]=="Debit"].empty:
+        st.info("No debit transactions found for the selected filters."); st.stop()
     cats = category_spending(fdf)
 
     cc1, cc2 = st.columns([1.6, 1])
@@ -659,15 +676,17 @@ with tabs[1]:
                      text=cats["Total"].apply(lambda x: f"₹{x:,.0f}"))
         fig.update_traces(textposition="outside", marker_line_width=0)
         fig.update_layout(title="Category-wise Spending", coloraxis_showscale=False, showlegend=False)
-        T(fig); st.plotly_chart(fig, use_container_width=True)
+        T(fig); PC(fig)
 
     with cc2:
         pm = payment_method_distribution(fdf)
         fig = px.pie(pm, names="Payment_Method", values="Total", hole=0.5, title="Payment Methods")
         fig.update_traces(textinfo="label+percent", textposition="outside",
+                          textfont=dict(size=9),
+                          automargin=True,
                           marker=dict(colors=PALETTE, line=dict(color="rgba(0,0,0,.3)", width=2)))
-        fig.update_layout(showlegend=False)
-        T(fig); st.plotly_chart(fig, use_container_width=True)
+        fig.update_layout(showlegend=False, margin=dict(l=100, r=100, t=60, b=80))
+        T(fig); PC(fig)
 
     pivot = spending_heatmap_data(fdf)
     if not pivot.empty:
@@ -679,7 +698,7 @@ with tabs[1]:
             colorbar=dict(title="₹ Spent", tickfont=dict(color="#C8C3FF"), titlefont=dict(color="#C8C3FF")),
         ))
         fig.update_layout(title="Spending Intensity Heatmap  (Day × Week)")
-        T(fig); st.plotly_chart(fig, use_container_width=True)
+        T(fig); PC(fig)
 
     st.markdown('<div class="eyebrow">Category Details</div>', unsafe_allow_html=True)
     st.dataframe(cats.style.format({"Total":"₹{:,.0f}","Percentage":"{:.1f}%","Avg_Transaction":"₹{:,.0f}"}),
@@ -696,54 +715,71 @@ with tabs[1]:
 
 # ════════════════ TAB 3 — MONTHLY TRENDS ══════════════════════════════════════
 with tabs[2]:
-    import plotly.graph_objects as go
     from src.analytics.expense_analysis import monthly_spending, monthly_category_spending, budget_vs_actual
     from src.visualization.charts import budget_gauge_chart
+    if fdf[fdf["Transaction_Type"]=="Debit"].empty:
+        st.info("No debit transactions found for the selected filters.")
+    else:
+        monthly = monthly_spending(fdf)
 
-    monthly = monthly_spending(fdf)
+        # ── Month-over-Month comparison cards ──
+        if len(monthly) >= 2:
+            curr = monthly.iloc[-1]; prev = monthly.iloc[-2]
+            curr_inc = fdf[fdf["Year"]==curr["Year"]][fdf["Month"]==curr["Month"]][fdf["Transaction_Type"]=="Credit"]["Amount"].sum()
+            prev_inc = fdf[fdf["Year"]==prev["Year"]][fdf["Month"]==prev["Month"]][fdf["Transaction_Type"]=="Credit"]["Amount"].sum()
+            curr_sav = curr_inc - curr["Total_Spending"]
+            prev_sav = prev_inc - prev["Total_Spending"]
+            sp_chg = ((curr["Total_Spending"]-prev["Total_Spending"])/prev["Total_Spending"]*100) if prev["Total_Spending"]>0 else 0
+            in_chg = ((curr_inc-prev_inc)/prev_inc*100) if prev_inc>0 else 0
+            sv_chg = ((curr_sav-prev_sav)/abs(prev_sav)*100) if prev_sav!=0 else 0
+            mc1,mc2,mc3 = st.columns(3)
+            with mc1: st.metric(f"Spending — {curr['Month_Name']}", f"₹{curr['Total_Spending']:,.0f}", delta=f"{sp_chg:+.1f}% vs {prev['Month_Name']}", delta_color="inverse")
+            with mc2: st.metric(f"Income — {curr['Month_Name']}", f"₹{curr_inc:,.0f}", delta=f"{in_chg:+.1f}% vs {prev['Month_Name']}")
+            with mc3: st.metric(f"Savings — {curr['Month_Name']}", f"₹{curr_sav:,.0f}", delta=f"{sv_chg:+.1f}% vs {prev['Month_Name']}")
+            st.markdown("<br>", unsafe_allow_html=True)
 
-    fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=monthly["YearMonth"], y=monthly["Total_Spending"],
-        marker=dict(color=monthly["Total_Spending"],
-                    colorscale=[[0,"#2A1A6E"],[.5,"#9B7FFF"],[1,"#00E5CC"]], line=dict(width=0)),
-        text=monthly["Total_Spending"].apply(lambda x:f"₹{x:,.0f}"), textposition="outside",
-        name="Spending",
-    ))
-    fig.add_trace(go.Scatter(
-        x=monthly["YearMonth"], y=monthly["Total_Spending"],
-        mode="lines+markers", name="Trend",
-        line=dict(color="#FF4FA3", width=2, dash="dot"),
-        marker=dict(size=8, color="#FF4FA3"),
-    ))
-    fig.update_layout(title="Monthly Spending Overview", showlegend=True,
-                      legend=dict(orientation="h", y=1.12))
-    T(fig); st.plotly_chart(fig, use_container_width=True)
+        fig = go.Figure()
+        fig.add_trace(go.Bar(
+            x=monthly["YearMonth"], y=monthly["Total_Spending"],
+            marker=dict(color=monthly["Total_Spending"],
+                        colorscale=[[0,"#2A1A6E"],[.5,"#9B7FFF"],[1,"#00E5CC"]], line=dict(width=0)),
+            text=monthly["Total_Spending"].apply(lambda x:f"₹{x:,.0f}"), textposition="outside",
+            name="Spending",
+        ))
+        fig.add_trace(go.Scatter(
+            x=monthly["YearMonth"], y=monthly["Total_Spending"],
+            mode="lines+markers", name="Trend",
+            line=dict(color="#FF4FA3", width=2, dash="dot"),
+            marker=dict(size=8, color="#FF4FA3"),
+        ))
+        fig.update_layout(title="Monthly Spending Overview", showlegend=True,
+                          legend=dict(orientation="h", y=1.12))
+        T(fig); PC(fig)
 
-    pivot = monthly_category_spending(fdf)
-    cat_cols = [c for c in pivot.columns if c != "YearMonth"]
-    fig = go.Figure()
-    for i,cat in enumerate(cat_cols):
-        fig.add_trace(go.Bar(name=cat, x=pivot["YearMonth"], y=pivot[cat],
-                             marker_color=PALETTE[i%len(PALETTE)], marker_line_width=0))
-    fig.update_layout(barmode="stack", title="Monthly Category Breakdown",
-                      legend=dict(orientation="h", y=-0.28))
-    T(fig); st.plotly_chart(fig, use_container_width=True)
+        pivot = monthly_category_spending(fdf)
+        cat_cols = [c for c in pivot.columns if c != "YearMonth"]
+        fig = go.Figure()
+        for i,cat in enumerate(cat_cols):
+            fig.add_trace(go.Bar(name=cat, x=pivot["YearMonth"], y=pivot[cat],
+                                 marker_color=PALETTE[i%len(PALETTE)], marker_line_width=0))
+        fig.update_layout(barmode="stack", title="Monthly Category Breakdown",
+                          legend=dict(orientation="h", y=-0.28))
+        T(fig); PC(fig)
 
-    st.markdown('<div class="eyebrow">Budget vs Actual</div>', unsafe_allow_html=True)
-    yrs = fdf["Year"].unique(); mths = fdf["Month"].unique()
-    if len(yrs) and len(mths):
-        bdf = budget_vs_actual(fdf, budgets, int(yrs[-1]), int(mths[-1]))
-        if not bdf.empty:
-            gcols = st.columns(min(4, len(bdf)))
-            for i,(_, row) in enumerate(bdf.iterrows()):
-                with gcols[i%4]:
-                    fig = budget_gauge_chart(row["Category"], row["Actual"], row["Budget"])
-                    fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", font_color="#C8C3FF")
-                    st.plotly_chart(fig, use_container_width=True)
-            st.dataframe(bdf.style.format({"Budget":"₹{:,.0f}","Actual":"₹{:,.0f}",
-                                            "Remaining":"₹{:,.0f}","Used_Pct":"{:.1f}%"}),
-                         use_container_width=True)
+        st.markdown('<div class="eyebrow">Budget vs Actual</div>', unsafe_allow_html=True)
+        yrs = fdf["Year"].unique(); mths = fdf["Month"].unique()
+        if len(yrs) and len(mths):
+            bdf = budget_vs_actual(fdf, budgets, int(yrs[-1]), int(mths[-1]))
+            if not bdf.empty:
+                gcols = st.columns(min(4, len(bdf)))
+                for i,(_, row) in enumerate(bdf.iterrows()):
+                    with gcols[i%4]:
+                        fig = budget_gauge_chart(row["Category"], row["Actual"], row["Budget"])
+                        fig.update_layout(paper_bgcolor="rgba(0,0,0,0)", font_color="#C8C3FF")
+                        st.plotly_chart(fig, use_container_width=True)
+                st.dataframe(bdf.style.format({"Budget":"₹{:,.0f}","Actual":"₹{:,.0f}",
+                                                "Remaining":"₹{:,.0f}","Used_Pct":"{:.1f}%"}),
+                             use_container_width=True)
 
 
 # ════════════════ TAB 4 — INSIGHTS ════════════════════════════════════════════
@@ -783,8 +819,6 @@ with tabs[3]:
 
 # ════════════════ TAB 5 — ML & PREDICTIONS ════════════════════════════════════
 with tabs[4]:
-    import plotly.graph_objects as go
-    import plotly.express as px
     from src.ml_models.prediction_model import predict_next_month_spending, predict_category_trends
     from src.ml_models.clustering_model import cluster_spending_patterns, get_current_cluster
 
@@ -819,13 +853,13 @@ with tabs[4]:
                                   line=dict(color="#FF4FA3",width=2,dash="dot"),
                                   marker=dict(size=10,color="#FF4FA3")))
         fig.update_layout(title="Spending Prediction — Next Month", hovermode="x unified")
-        T(fig); st.plotly_chart(fig, use_container_width=True)
+        T(fig); PC(fig)
     else:
         st.info(pred.get("message","Need ≥ 3 months of data."))
 
     st.markdown('<div class="eyebrow">Category Forecast</div>', unsafe_allow_html=True)
     with st.spinner("Forecasting categories…"):
-        ct = predict_category_trends(df)
+        ct = predict_category_trends(df)  # always use full df for better accuracy
     if not ct.empty:
         clrs = ["#39FF94" if x<0 else "#FF4FA3" for x in ct["Change_Pct"]]
         fig = go.Figure(go.Bar(y=ct["Category"], x=ct["Predicted_Next_Month"],
@@ -834,7 +868,7 @@ with tabs[4]:
                                 textposition="outside"))
         fig.update_layout(title="Predicted Next Month — by Category",
                           yaxis=dict(categoryorder="total ascending"), showlegend=False)
-        T(fig); st.plotly_chart(fig, use_container_width=True)
+        T(fig); PC(fig)
         st.dataframe(ct.style.format({"Last_Month_Spending":"₹{:,.0f}",
                                        "Predicted_Next_Month":"₹{:,.0f}","Change_Pct":"{:+.1f}%"}),
                      use_container_width=True)
@@ -856,7 +890,7 @@ with tabs[4]:
                                   title="Spending Pattern Clusters",
                                   color_discrete_sequence=PALETTE[:nc])
                 fig.update_traces(marker=dict(line=dict(color="rgba(0,0,0,.4)",width=2)))
-                T(fig); st.plotly_chart(fig, use_container_width=True)
+                T(fig); PC(fig)
             with cl2:
                 st.dataframe(cr["cluster_stats"], use_container_width=True, height=300)
     else:
@@ -865,12 +899,11 @@ with tabs[4]:
 
 # ════════════════ TAB 6 — ANOMALY DETECTION ═══════════════════════════════════
 with tabs[5]:
-    import plotly.express as px
     from src.ml_models.anomaly_detection import detect_all_anomalies, format_anomaly_alerts
 
     st.markdown('<div class="eyebrow">Anomaly & Fraud Detection</div>', unsafe_allow_html=True)
     with st.spinner("Scanning transactions…"):
-        anom  = detect_all_anomalies(fdf)
+        anom  = detect_all_anomalies(df)  # use full df for better anomaly accuracy
         alrts = format_anomaly_alerts(anom)
 
     an1,an2,an3 = st.columns(3)
@@ -893,7 +926,7 @@ with tabs[5]:
                          hover_data=["Description","Category","Merchant"],
                          title="Transactions — Anomalies Highlighted")
         fig.update_layout(legend=dict(title=""))
-        T(fig); st.plotly_chart(fig, use_container_width=True)
+        T(fig); PC(fig)
         st.dataframe(anom, use_container_width=True)
     else:
         st.markdown("""
@@ -942,7 +975,16 @@ with tabs[6]:
                                use_container_width=True)
 
     st.markdown('<div class="eyebrow">Transaction Data</div>', unsafe_allow_html=True)
+    search = st.text_input("🔍 Search transactions", placeholder="Search by description, category, merchant...")
     disp = fdf.copy(); disp["Date"] = disp["Date"].dt.strftime("%Y-%m-%d")
+    if search:
+        mask = (
+            disp["Description"].str.contains(search, case=False, na=False) |
+            disp["Category"].str.contains(search, case=False, na=False) |
+            disp["Merchant"].str.contains(search, case=False, na=False)
+        )
+        disp = disp[mask]
+        st.caption(f"Showing {len(disp)} result(s) for '{search}'")
     st.dataframe(disp[["Date","Description","Category","Amount",
                         "Transaction_Type","Merchant","Payment_Method"]],
                  use_container_width=True, height=380)
