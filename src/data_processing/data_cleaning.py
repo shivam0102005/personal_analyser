@@ -214,7 +214,7 @@ class DataCleaner:
                 except ValueError:
                     continue
             try:
-                return pd.to_datetime(str(val), infer_datetime_format=True)
+                return pd.to_datetime(str(val), format="mixed")
             except Exception:
                 return pd.NaT
 
