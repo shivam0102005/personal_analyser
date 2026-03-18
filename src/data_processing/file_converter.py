@@ -174,3 +174,5 @@ def load_file(file, filename: str = None) -> pd.DataFrame:
 
     loader = loaders.get(ext, load_csv)
     return loader(file)
+
+
